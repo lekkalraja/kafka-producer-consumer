@@ -8,7 +8,7 @@ object Producer extends App {
 
   val props:Properties = getConfig
   val producer = new KafkaProducer[String, String](props)
-  val topic = "course_topic"
+  val topic = "s78m90xp-workd-count-input"
   try {
     for (course <- Array("Scala", "Spark", "Akka", "Play")) {
       val record = new ProducerRecord[String, String](topic, course, s"I am Learning $course")
@@ -22,11 +22,18 @@ object Producer extends App {
   }
 
   def getConfig: Properties = {
-    val props:Properties = new Properties()
-    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092")
+    val username = "s78m90xp"
+    val password = "JsAkTX90KYhpkceLUY32PxnLtfcjURIk"
+    val jaasTemplate = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" password=\"%s\";"
+    val jaasCfg = String.format(jaasTemplate, username, password)
+
+    val props = new Properties
+    props.put("bootstrap.servers", "tricycle-01.srvs.cloudkafka.com:9094,tricycle-02.srvs.cloudkafka.com:9094,tricycle-03.srvs.cloudkafka.com:9094")
     props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
     props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
-    props.put(ProducerConfig.ACKS_CONFIG,"all")
+    props.put("security.protocol", "SASL_SSL")
+    props.put("sasl.mechanism", "SCRAM-SHA-256")
+    props.put("sasl.jaas.config", jaasCfg)
     props
   }
 }
