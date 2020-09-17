@@ -9,10 +9,8 @@ import scala.jdk.CollectionConverters._
 
 object Consumer extends App {
 
-  val props:Properties = getConfig
-
-  val consumer = new KafkaConsumer(props)
-  val topics = List("course_topic")
+  val consumer = new KafkaConsumer(Config.getConsumerConfig)
+  val topics = List("s78m90xp-workd-count-input")
   try {
     consumer.subscribe(topics.asJava)
     while (true) {
@@ -26,15 +24,5 @@ object Consumer extends App {
   }finally {
     consumer.close()
   }
-
-  def getConfig : Properties = {
-    val props:Properties = new Properties()
-    props.put(ConsumerConfig.GROUP_ID_CONFIG, "test")
-    props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092")
-    props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, Serdes.String().getClass)
-    props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, Serdes.String().getClass)
-    props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
-    props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000")
-    props
-  }
+  Runtime.getRuntime.addShutdownHook(new Thread(() => consumer.close()))
 }
