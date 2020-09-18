@@ -1,16 +1,13 @@
 package com.example.kafka.client
 
-import java.util.Properties
-
-import org.apache.kafka.clients.consumer.{ConsumerConfig, KafkaConsumer}
-import org.apache.kafka.common.serialization.Serdes
+import org.apache.kafka.clients.consumer.KafkaConsumer
 
 import scala.jdk.CollectionConverters._
 
 object Consumer extends App {
 
   val consumer = new KafkaConsumer(Config.getConsumerConfig)
-  val topics = List("s78m90xp-workd-count-input")
+  val topics = List("learning-topic")
   try {
     consumer.subscribe(topics.asJava)
     while (true) {

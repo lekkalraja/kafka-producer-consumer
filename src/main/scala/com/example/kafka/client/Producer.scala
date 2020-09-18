@@ -5,7 +5,7 @@ import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 object Producer extends App {
 
   val producer = new KafkaProducer[String, String](Config.getProducerConfig)
-  val topic = "s78m90xp-workd-count-input"
+  val topic = "learning-topic"
   try {
     for (course <- Array("Scala", "Spark", "Akka", "Play")) {
       val record = new ProducerRecord[String, String](topic, course, s"I am Learning $course")
